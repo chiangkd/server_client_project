@@ -6,12 +6,16 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+
+#define MAXSEND 256             // send to client
+#define MAXRECEIVE 256          // receive from client
+
 int main(int argc , char *argv[])
 
 {
     //  Create Socket
-    char inputBuffer[256] = {};
-    char message[] = {"Hi,this is server.\n"};
+    char inputBuffer[MAXRECEIVE] = {};
+    char message[] = {"Connection established!\n"};
     int sockfd = 0,forClientSockfd = 0;
     sockfd = socket(AF_INET , SOCK_STREAM , 0);
 
@@ -28,12 +32,26 @@ int main(int argc , char *argv[])
     serverInfo.sin_addr.s_addr = INADDR_ANY;
     serverInfo.sin_port = htons(8700);
     bind(sockfd,(struct sockaddr *)&serverInfo,sizeof(serverInfo));
-    listen(sockfd,5);
-
+    listen(sockfd,100);
+    forClientSockfd = accept(sockfd,(struct sockaddr*) &clientInfo, &addrlen);
+    
+    int creat_connection = 0;
+    char rep_message[] = {"You send: "};
     while(1){
-        forClientSockfd = accept(sockfd,(struct sockaddr*) &clientInfo, &addrlen);
-        send(forClientSockfd,message,sizeof(message),0);
+        char reply[MAXSEND];
+        // send(forClientSockfd, inputBuffer,sizeof(inputBuffer) , 0);
+        /* stop here and wait the receive */
+        memset(inputBuffer, '\0', sizeof(inputBuffer));
         recv(forClientSockfd,inputBuffer,sizeof(inputBuffer),0);
+
+        /* wait receive and concat the replyment */
+        memset(reply, '\0', sizeof(reply));
+        strcat(reply, rep_message);
+        strcat(reply, inputBuffer);
+        strcat(reply, "\n");
+        /* ======================== */
+        creat_connection ? send(forClientSockfd, reply,sizeof(reply),0) : send(forClientSockfd, message, sizeof(message), 0);
+        creat_connection = 1;
         printf("Get:%s\n",inputBuffer);
     }
     return 0;

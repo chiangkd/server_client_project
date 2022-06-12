@@ -6,6 +6,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+#define MAXSEND 256         // send to server
+#define MAXRECEIVE 256      // receive from server
 
 int main(int argc , char *argv[])
 {
@@ -31,21 +33,26 @@ int main(int argc , char *argv[])
 
     int err = connect(sockfd,(struct sockaddr *)&info,sizeof(info));
     if(err==-1){
-        printf("Connection error");
+        printf("Connection error\n");
     }
 
 
     //Send a message to server
     // char message[] = {"Hi there"};
-    char message[100];
-    printf("Input Something\n");
-    scanf("%s", message);
-    char receiveMessage[100] = {};
-    send(sockfd,message,sizeof(message),0);
-    recv(sockfd,receiveMessage,sizeof(receiveMessage),0);
-
-    printf("%s",receiveMessage);
+    char message[MAXSEND];
+    while(1){
+        
+        char receiveMessage[MAXRECEIVE] = {};
+        send(sockfd,message,sizeof(message),0);
+        /* stop here and wait receive */
+        recv(sockfd,receiveMessage,sizeof(receiveMessage),0);
+        printf("%s",receiveMessage);
+        printf("Input Something\n");
+        memset(message, '\0', sizeof(message));
+        scanf("%s", message);
+    }
     printf("close Socket\n");
     close(sockfd);
+    
     return 0;
 }
