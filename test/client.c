@@ -50,9 +50,11 @@ int main(int argc , char *argv[])
         printf("Input Something\n");
         memset(message, '\0', sizeof(message));
         scanf("%s", message);
+        
     }
     printf("close Socket\n");
     close(sockfd);
+    
     
     return 0;
 }

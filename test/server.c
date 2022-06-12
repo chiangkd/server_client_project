@@ -33,8 +33,8 @@ int main(int argc , char *argv[])
     serverInfo.sin_port = htons(8700);
     bind(sockfd,(struct sockaddr *)&serverInfo,sizeof(serverInfo));
     listen(sockfd,100);
-    forClientSockfd = accept(sockfd,(struct sockaddr*) &clientInfo, &addrlen);
     
+    forClientSockfd = accept(sockfd,(struct sockaddr*) &clientInfo, &addrlen);
     int creat_connection = 0;
     char rep_message[] = {"You send: "};
     while(1){
@@ -51,8 +51,10 @@ int main(int argc , char *argv[])
         strcat(reply, "\n");
         /* ======================== */
         creat_connection ? send(forClientSockfd, reply,sizeof(reply),0) : send(forClientSockfd, message, sizeof(message), 0);
+        if(creat_connection)
+            printf("Get:%s\n",inputBuffer);
+
         creat_connection = 1;
-        printf("Get:%s\n",inputBuffer);
     }
     return 0;
 }
