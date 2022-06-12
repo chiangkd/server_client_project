@@ -278,15 +278,72 @@ void format_size(char* buf, struct stat *stat) {
 	}
 }
 
+
 void handle_directory_request(int out_fd, int dir_fd, char *filename) {
 	char buf[MAXLINE], m_time[32], size[16];
 	struct stat statbuf;
-	sprintf(buf, "HTTP/1.1 200 OK\r\n%s%s%s%s%s",
+	sprintf(buf, "HTTP/1.1 200 OK\r\n%s%s%s%s%s%s%s%s",
 			"Content-Type: text/html\r\n\r\n",
-			"<html><head><style>",
-			"body{font-family: monospace; font-size: 13px;}",
+			"<html><head>",
+			"<title>NM_final</title>",
+    		"<link rel=\"stylesheet\" href=\"/somefile/conf/style.css\">",
+			"<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js\"></script>",
+			"<style>body{font-family: monospace; font-size: 13px;}",
 			"td {padding: 1.5px 6px;}",
-			"</style></head><body><table>\n");
+			"</style></head>\n");
+	
+	/* before re-sprintf, need to "writen" first, otherwise it will replace all the buffer element */
+	writen(out_fd, buf, strlen(buf));
+
+	sprintf(buf, "<script>\r\n%s%s%s%s",
+			"$(function () {",
+			"$(window).resize(resizeCanvas);",
+			"resizeCanvas();",
+			"});");
+	writen(out_fd, buf, strlen(buf));
+
+	sprintf(buf, "function resizeCanvas() {\r\n%s%s%s",
+			"$(\"#myCanvas\").attr(\"width\", $(window).get(0).innerWidth);",
+			"$(\"#myCanvas\").attr(\"height\", $(window).get(0).innerHeight);",
+			"}");
+	writen(out_fd, buf, strlen(buf));
+
+	sprintf(buf, "document.write( \r\n %s%s%s%s%s",
+			"'<script src=\"http://' +",
+			"(location.host || \"localhost\").split(\":\")[0] +",
+			"':35729/livereload.js?snipver=1\"></' +",
+			"\"script>\"",
+			");");
+	writen(out_fd, buf, strlen(buf));
+
+	sprintf(buf, "</script>\n");
+	writen(out_fd, buf, strlen(buf));
+
+	sprintf(buf, "<canvas id=\"myCanvas\" width=\"1000\" height=\"1000\"></canvas>");
+	writen(out_fd, buf, strlen(buf));
+
+	sprintf(buf, "<body>");
+	writen(out_fd, buf, strlen(buf));
+
+
+	sprintf(buf, "%s%s%s%s%s%s%s%s%s%s%s%s",
+	"<div class=\"card\">",
+		"<div class=\"card__inner\">",
+			"<div class=\"card__face card__face--front\">",
+				"<h2>Click it!</h2>",
+			"</div>",
+			"<div class=\"card__face card__face--back\">",
+				"<div class=\"card__content\">",
+              		"<div class=\"card__header\">",
+                		"<img src=\"/somefile/conf/pp.jpg\" alt=\"\" class=\"pp\" />",
+                		"<h2>NM_final!</h2>",
+              		"</div>",
+              		"<div class=\"card__body\">");
+	writen(out_fd, buf, strlen(buf));
+
+
+	/* handle directory */
+	sprintf(buf, "<table>\n");
 	writen(out_fd, buf, strlen(buf));
 	DIR *d = fdopendir(dir_fd);
 	struct dirent *dp;
@@ -300,6 +357,8 @@ void handle_directory_request(int out_fd, int dir_fd, char *filename) {
 			continue;
 		}
 		fstat(ffd, &statbuf);
+
+		/* file display */
 		strftime(m_time, sizeof(m_time),
 				 "%Y-%m-%d %H:%M", localtime(&statbuf.st_mtime));
 		format_size(size, &statbuf);
@@ -309,10 +368,36 @@ void handle_directory_request(int out_fd, int dir_fd, char *filename) {
 					dp->d_name, d, dp->d_name, d, m_time, size);
 			writen(out_fd, buf, strlen(buf));
 		}
+		/* ============ */
 		close(ffd);
 	}
-	sprintf(buf, "</table></body></html>");
+
+	sprintf(buf, "</table>\n");
+
 	writen(out_fd, buf, strlen(buf));
+
+	sprintf(buf, "%s%s%s%s%s",
+	"</div>",
+            "</div>",
+          "</div>",
+        "</div>",
+      "</div>");
+
+	writen(out_fd, buf, strlen(buf));
+
+
+	sprintf(buf, "</body>");
+	writen(out_fd, buf, strlen(buf));
+
+	sprintf(buf, "<script src=\"/somefile/conf/fireworks.js\"></script>");
+	writen(out_fd, buf, strlen(buf));
+
+	sprintf(buf, "<script src=\"/somefile/conf/card.js\"></script>");
+	writen(out_fd, buf, strlen(buf));
+
+	sprintf(buf, "</html>");
+	writen(out_fd, buf, strlen(buf));
+
 	closedir(d);
 }
 

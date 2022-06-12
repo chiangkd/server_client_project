@@ -1,0 +1,65 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>NM_final</title>
+    <link rel="stylesheet" href="./style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  </head>
+
+  <script>
+    $(function () {
+      //添加窗口尺寸改变响应监听canvas
+      $(window).resize(resizeCanvas);
+      //页面加载后先设置一下canvas大小
+      resizeCanvas();
+    });
+
+    //窗口尺寸改变响应（修改canvas大小）
+    function resizeCanvas() {
+      $("#myCanvas").attr("width", $(window).get(0).innerWidth);
+      $("#myCanvas").attr("height", $(window).get(0).innerHeight);
+    }
+    // this is for auto reloading
+    document.write(
+      '<script src="http://' +
+        (location.host || "localhost").split(":")[0] +
+        ':35729/livereload.js?snipver=1"></' +
+        "script>"
+    );
+  </script>
+<canvas id="myCanvas" width="1000" height="1000"></canvas>
+<body>
+    <div class="card">
+        <div class="card__inner">
+          <div class="card__face card__face--front">
+            <h2>Click it!</h2>
+          </div>
+          <div class="card__face card__face--back">
+            <div class="card__content">
+              <div class="card__header">
+                <img src="./pp.jpg" alt="" class="pp" />
+                <h2>NM_final!</h2>
+              </div>
+              <div class="card__body">
+                <table>
+                    <tr><td><a href="web">web</a></td><td>2022-06-13 00:43</td><td>17.4K</td></tr>
+                    <tr><td><a href="testweb.c">testweb.c</a></td><td>2022-06-13 02:40</td><td>16.1K</td></tr>
+                    <tr><td><a href="fireworks.js">fireworks.js</a></td><td>2022-06-13 01:25</td><td>2.9K</td></tr>
+                    <tr><td><a href="index.html">index.html</a></td><td>2022-06-13 02:27</td><td>1.1K</td></tr>
+                    <tr><td><a href="testweb">testweb</a></td><td>2022-06-13 02:40</td><td>31.9K</td></tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+  </body>
+  
+
+  
+  <script src="./fireworks.js"></script>
+  <script src="./card.js"></script>
+
+</html>
+
