@@ -336,7 +336,7 @@ void handle_directory_request(int out_fd, int dir_fd, char *filename) {
 				"<div class=\"card__content\">",
               		"<div class=\"card__header\">",
                 		"<img src=\"/somefile/conf/pp.jpg\" alt=\"\" class=\"pp\" />",
-                		"<h2>NM_final!</h2>",
+                		"<h2>NM Final Project &#128513</h2>",
               		"</div>",
               		"<div class=\"card__body\">");
 	writen(out_fd, buf, strlen(buf));
